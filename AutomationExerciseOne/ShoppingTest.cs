@@ -70,19 +70,6 @@ namespace AutomationExerciseOne
         }
 
         [Test]
-        public void Given_ValidContactDetailAndFileToUpload_When_SendingContactMessage_ThenReturns_ContactSuccessMessage()
-        {
-            contactUsLink.Click();
-            subjectHeadingDropDown.FindElement(By.XPath("//option[. = 'Customer service']")).Click();
-            contactEmailTextBox.SendKeys("mbatha@gmail.com");
-            orderReferenceTextBox.SendKeys("700");
-            messageTextArea.SendKeys("My order is missing some items");
-            sendMessageButton.Click();
-
-            Assert.IsTrue(contactMessageSuccessNotification.Displayed);
-        }
-
-        [Test]
         public void GivenValidSignInDetails_When_SigningIn_ThenReturns_SignIngSuccesfullMessage()
         {
             signInLink.Click();
