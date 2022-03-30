@@ -57,15 +57,16 @@ namespace AutomationExerciseOne
         }
 
         [Test]
-        public void Given_ValidContactDetails_When_SendingContactMessage_ThenDisplay_contactMessageSuccessAlert()
+        public void Given_ValidContactDetails_When_SendingContactMessage_ThenDisplay_ClontactMessageSuccessAlert()
         {
             var contactEmailInput = "mbatha@gmail.com";
             var orderReferenceInput = "700";
             var contactMessageInput = "My order is missing some items";
+            var contactSubject = "Customer service";
 
             contactUsLink.Click();
-            subjectHeadingDropDown.FindElement(By.XPath("//option[. = 'Customer service']")).Click();
-            subjectHeadingDropDown.Selected.ToString();
+            var selectDropDownElement = new SelectElement(subjectHeadingDropDown);
+            selectDropDownElement.SelectByText(contactSubject);
             contactEmailTextBox.SendKeys(contactEmailInput);
             orderReferenceTextBox.SendKeys(orderReferenceInput);
             messageTextArea.SendKeys(contactMessageInput);
