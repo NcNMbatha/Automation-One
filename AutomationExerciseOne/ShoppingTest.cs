@@ -3,7 +3,6 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
@@ -17,6 +16,7 @@ namespace AutomationExerciseOne
 
         private IWebElement searchTextBox => webDriver.FindElement(By.Name("search_query"));
         private IWebElement searchButton => webDriver.FindElement(By.Name("submit_search"));
+        private IWebElement searchResultsMessageAlert => webDriver.FindElement(By.ClassName("product-count"));
 
         private IWebElement subjectHeadingDropDown => webDriver.FindElement(By.Name("id_contact"));
         private IWebElement contactEmailTextBox => webDriver.FindElement(By.Id("email"));
@@ -26,7 +26,7 @@ namespace AutomationExerciseOne
         private IWebElement messageTextArea => webDriver.FindElement(By.Name("message"));
         private IWebElement sendMessageButton => webDriver.FindElement(By.Name("submitMessage"));
         private IWebElement contactUsLink => webDriver.FindElement(By.Id("contact-link"));
-        private IWebElement contactMessageSuccessNotification => webDriver.FindElement(By.CssSelector("p.alert.alert-success"));
+        private IWebElement contactMessageSuccessAlert => webDriver.FindElement(By.CssSelector("p.alert.alert-success"));
 
         private IWebElement signEmailTextBox => webDriver.FindElement(By.Name("email"));
         private IWebElement signPasswordTextBox => webDriver.FindElement(By.Name("passwd"));
@@ -45,40 +45,61 @@ namespace AutomationExerciseOne
         }
 
         [Test]
-        public void Given_ExistingSearchItemName_When_Searching_ThenReturn_SearchResultsCountGreatorThanZero()
+        public void Given_ExistingSearchItemName_When_Searching_ThenConfirm_SearchResultsMessageAlertIsEqualsToExpected()
         {
-            searchTextBox.SendKeys("Printed dress");
+            var expected = "Showing 1 - 5 of 5 items";
+            var searchInput = "Printed dress";
+
+            searchTextBox.SendKeys(searchInput);
             searchButton.Click();
 
-            var expected = "Showing 1 - 5 of 5 items";
-            var actual = webDriver.FindElement(By.ClassName("product-count")).Text;
-
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected, searchResultsMessageAlert.Text);
         }
 
         [Test]
-        public void Given_ValidContactDetails_When_SendingContactMessage_ThenReturns_ContactSuccessMessage()
+        public void Given_ValidContactDetails_When_SendingContactMessage_ThenDisplay_contactMessageSuccessAlert()
         {
+            var contactEmailInput = "mbatha@gmail.com";
+            var orderReferenceInput = "700";
+            var contactMessageInput = "My order is missing some items";
+
             contactUsLink.Click();
             subjectHeadingDropDown.FindElement(By.XPath("//option[. = 'Customer service']")).Click();
-            contactEmailTextBox.SendKeys("mbatha@gmail.com");
-            orderReferenceTextBox.SendKeys("700");
-            messageTextArea.SendKeys("My order is missing some items");
+            subjectHeadingDropDown.Selected.ToString();
+            contactEmailTextBox.SendKeys(contactEmailInput);
+            orderReferenceTextBox.SendKeys(orderReferenceInput);
+            messageTextArea.SendKeys(contactMessageInput);
             sendMessageButton.Click();
 
-            Assert.IsTrue(contactMessageSuccessNotification.Displayed);
-        }
+            Assert.IsTrue(contactMessageSuccessAlert.Displayed);
+        }   
 
         [Test]
-        public void GivenValidSignInDetails_When_SigningIn_ThenReturns_SignIngSuccesfullMessage()
+        public void GivenValidSignInDetails_When_SigningIn_ThenConfirm_SignOutLinkTextEqualsExpectedLinkText()
         {
-            signInLink.Click();
-            signEmailTextBox.SendKeys("mbathatest@gmail.com");
-            signPasswordTextBox.SendKeys("123456789");
-            signInButton.Click();
+            var signInEmailInput = "mbathatest@gmail.com";
+            var signInPasswordInput = "123456789";
+            var expectedLinkText = "Sign out";
+            var signOutErrorMessage = "Failed to logout";
 
-            Assert.IsTrue(signOutLink.Displayed);
-            signOutLink.Click();
+            try
+            {
+                signInLink.Click();
+                signEmailTextBox.SendKeys(signInEmailInput);
+                signPasswordTextBox.SendKeys(signInPasswordInput);
+                signInButton.Click();
+                var signOutLinkText = signOutLink.Text;
+                signOutLink.Click();
+
+                if (signInLink.Displayed)
+                {
+                    Assert.AreEqual(expectedLinkText, signOutLinkText);
+                }
+            }
+            catch (Exception)
+            {
+                 throw new Exception($"{signOutErrorMessage}");
+            }
         }
 
         [TearDown]
