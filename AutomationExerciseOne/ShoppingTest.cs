@@ -57,7 +57,7 @@ namespace AutomationExerciseOne
         }
 
         [Test]
-        public void Given_ValidContactDetails_When_SendingContactMessage_ThenDisplay_ClontactMessageSuccessAlert()
+        public void Given_ValidContactDetails_When_SendingContactMessage_ThenDisplay_ContactMessageSuccessAlert()
         {
             var contactEmailInput = "mbatha@gmail.com";
             var orderReferenceInput = "700";
@@ -81,26 +81,19 @@ namespace AutomationExerciseOne
             var signInEmailInput = "mbathatest@gmail.com";
             var signInPasswordInput = "123456789";
             var expectedLinkText = "Sign out";
-            var signOutErrorMessage = "Failed to logout";
 
-            try
-            {
-                signInLink.Click();
-                signEmailTextBox.SendKeys(signInEmailInput);
-                signPasswordTextBox.SendKeys(signInPasswordInput);
-                signInButton.Click();
-                var signOutLinkText = signOutLink.Text;
-                signOutLink.Click();
+            signInLink.Click();
+            signEmailTextBox.SendKeys(signInEmailInput);
+            signPasswordTextBox.SendKeys(signInPasswordInput);
+            signInButton.Click();
+            var signOutLinkText = signOutLink.Text;
+            signOutLink.Click();
 
-                if (signInLink.Displayed)
-                {
-                    Assert.AreEqual(expectedLinkText, signOutLinkText);
-                }
-            }
-            catch (Exception)
+            if (signInLink.Displayed)
             {
-                 throw new Exception($"{signOutErrorMessage}");
+                Assert.AreEqual(expectedLinkText, signOutLinkText);
             }
+
         }
 
         [TearDown]
